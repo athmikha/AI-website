@@ -422,6 +422,28 @@ textarea {
   resize: vertical;
 }
 
+input[type='file'] {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.image-preview {
+  margin-top: 8px;
+  height: 120px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.image-preview .pill {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
 .row {
   display: grid;
   gap: 12px;

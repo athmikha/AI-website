@@ -188,6 +188,19 @@ function App() {
     setForm(product)
   }
 
+  const handleImageUpload = (event) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      if (typeof e.target?.result === 'string') {
+        setForm((prev) => ({ ...prev, image: e.target.result }))
+      }
+    }
+    reader.readAsDataURL(file)
+  }
+
   const deleteProduct = (id) => {
     setProducts((prev) => prev.filter((item) => item.id !== id))
     if (editingId === id) resetForm()
@@ -394,13 +407,14 @@ function App() {
                   />
                 </label>
                 <label>
-                  Image URL
-                  <input
-                    value={form.image}
-                    onChange={(e) => setForm({ ...form, image: e.target.value })}
-                    placeholder="Paste photo link"
-                    required
-                  />
+                  Upload photo
+                  <input type="file" accept="image/*" onChange={handleImageUpload} required={!form.image} />
+                  <small className="muted">Choose an image from this device.</small>
+                  {form.image && (
+                    <div className="image-preview" style={{ backgroundImage: `url(${form.image})` }}>
+                      <span className="pill">Preview</span>
+                    </div>
+                  )}
                 </label>
               </div>
               <div className="row">
