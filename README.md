@@ -1,42 +1,12 @@
-# Shree Raam Jewellery showcase
+# React + Vite
 
-A React (Vite) experience for Shree Raam Jewellery with a luxe homepage, dedicated category pages, personalised silver art highlights, and a WhatsApp-first enquiry flow.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Project layout
-- `src/App.jsx` — homepage, category routes, hero carousel, gallery cards, and admin panel (add/edit/delete pieces).
-- `src/App.css` — luxe visual theme (glassmorphism, gradients, responsive grid, carousel, admin styling).
-- `src/index.css` — base typography, font imports, and root layout helpers.
-- `public/` — static assets served by Vite (favicon, etc.).
+Currently, two official plugins are available:
 
-## Running locally
-1. Prerequisites: Node.js 18+ and npm.
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Start dev server with hot reload:
-   ```bash
-   npm run dev
-   ```
-4. Open the printed local URL (typically http://localhost:5173) in your browser.
-5. Build for production (generates `dist/`):
-   ```bash
-   npm run build
-   ```
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-### Quick start from VS Code
-1. Open the cloned folder in VS Code.
-2. Run **View → Terminal** (or `` Ctrl+` ``) to open an integrated terminal.
-3. In the terminal, run `npm install` once, then `npm run dev`.
-4. VS Code will print a local URL (e.g., http://localhost:5173); Ctrl+Click it to launch the site.
-5. Keep the terminal running for live reload while you edit files in `src/`.
+## Expanding the ESLint configuration
 
-## Admin usage (non-technical)
-- Open `/admin` from the navigation.
-- Enter passcode `shreeraam123` to unlock editing.
-- Add or edit a piece with either an **image URL** or by **uploading a photo** (stored in your browser). Fill category, subcategory, and description.
-- Existing items appear in the list beside the form; use **Edit** or **Delete** to update.
-- All data is saved in the browser’s local storage—no backend required.
-
-## Contact CTA
-Every product card includes a **WhatsApp to know more** button that opens a message to `9443379960`.
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.

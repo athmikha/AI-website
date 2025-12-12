@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react'
-import { BrowserRouter as Router, Link, Route, Routes, useParams } from 'react-router-dom'
 import './App.css'
 
 const defaultCategories = {
@@ -96,63 +95,9 @@ const whatsappNumber = '9443379960'
 const adminPassword = 'shreeraam123'
 
 const createWhatsappLink = (title) =>
-  `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`I want to know more about ${title}`)}`
-
-const CategoryPage = ({ products, categories }) => {
-  const { categoryName } = useParams()
-  const decodedName = decodeURIComponent(categoryName || '')
-  const subcategories = categories[decodedName] || []
-  const categoryProducts = products.filter((item) => item.category === decodedName)
-
-  return (
-    <section className="section category-page">
-      <div className="category-hero">
-        <div>
-          <p className="eyebrow">Explore by category</p>
-          <h2>{decodedName || 'Collection'}</h2>
-          <p className="muted">Occasions and styles curated within this category.</p>
-          <div className="chip-row">
-            {subcategories.length === 0 && <span className="chip">Add subcategories in admin</span>}
-            {subcategories.map((sub) => (
-              <span key={sub} className="chip">
-                {sub}
-              </span>
-            ))}
-          </div>
-        </div>
-        <Link className="btn ghost" to="/">
-          ⟵ Back to homepage
-        </Link>
-      </div>
-
-      <div className="gallery-grid">
-        {categoryProducts.length === 0 && <div className="empty-card">No pieces yet. Add items in Admin.</div>}
-        {categoryProducts.map((item) => (
-          <article key={item.id} className="product-card">
-            <div className="product-img" style={{ backgroundImage: `url(${item.image})` }} />
-            <div className="product-body">
-              <div>
-                <p className="pill muted">
-                  {item.category} · {item.subcategory}
-                </p>
-                <h3>{item.title}</h3>
-                <p className="muted">{item.description}</p>
-              </div>
-              <div className="product-actions">
-                <a className="btn ghost" href={createWhatsappLink(item.title)} target="_blank" rel="noreferrer">
-                  WhatsApp to know more
-                </a>
-                <a className="btn text" href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noreferrer">
-                  Call the studio
-                </a>
-              </div>
-            </div>
-          </article>
-        ))}
-      </div>
-    </section>
-  )
-}
+  `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
+    `I want to know more about ${title}`,
+  )}`
 
 function App() {
   const [products, setProducts] = useState(() => {
@@ -175,7 +120,6 @@ function App() {
     subcategory: '',
     description: '',
     image: '',
-    imageName: '',
   })
   const [editingId, setEditingId] = useState('')
 
@@ -200,15 +144,7 @@ function App() {
   )
 
   const resetForm = () => {
-    setForm({
-      id: '',
-      title: '',
-      category: '',
-      subcategory: '',
-      description: '',
-      image: '',
-      imageName: '',
-    })
+    setForm({ id: '', title: '', category: '', subcategory: '', description: '', image: '' })
     setEditingId('')
   }
 
@@ -247,19 +183,6 @@ function App() {
     resetForm()
   }
 
-  const handleFileUpload = (event) => {
-    const file = event.target.files?.[0]
-    if (!file) return
-
-    const reader = new FileReader()
-    reader.onloadend = () => {
-      if (reader.result) {
-        setForm((prev) => ({ ...prev, image: reader.result.toString(), imageName: file.name }))
-      }
-    }
-    reader.readAsDataURL(file)
-  }
-
   const startEdit = (product) => {
     setEditingId(product.id)
     setForm(product)
@@ -276,16 +199,29 @@ function App() {
     [products],
   )
 
-  const HomePage = () => (
-    <>
+  return (
+    <div className="page">
+      <header className="nav">
+        <div className="logo-mark">SRJ</div>
+        <nav>
+          <a href="#collections">Collections</a>
+          <a href="#personalised">Personalised</a>
+          <a href="#gallery">Gallery</a>
+          <a href="#admin">Admin</a>
+        </nav>
+        <a className="phone" href={`tel:${whatsappNumber}`}>
+          {whatsappNumber}
+        </a>
+      </header>
+
       <section className="hero">
         <div className="hero-overlay" />
         <div className="hero-content">
           <p className="eyebrow">Fine Jewellery Studio · Tamil Nadu</p>
           <h1>Shree Raam Jewellery</h1>
           <p className="lead">
-            Bespoke silver gifting, engraved keepsakes, and a curated line of gold and diamond adornments for every
-            occasion.
+            Bespoke silver gifting, engraved keepsakes, and a curated line of gold and diamond
+            adornments for every occasion.
           </p>
           <div className="hero-actions">
             <a className="btn primary" href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noreferrer">
@@ -357,9 +293,9 @@ function App() {
                   </span>
                 ))}
               </div>
-              <Link className="link" to={`/category/${encodeURIComponent(category)}`}>
+              <a className="link" href="#gallery">
                 View pieces
-              </Link>
+              </a>
             </div>
           ))}
         </div>
@@ -374,7 +310,8 @@ function App() {
           <div className="feature-card">
             <h3>Engraved Pens & Signature Charms</h3>
             <p>
-              Corporate-worthy pens, charms, and plaques etched with names, logos, or handwritten signatures.
+              Corporate-worthy pens, charms, and plaques etched with names, logos, or handwritten
+              signatures.
             </p>
           </div>
           <div className="feature-card">
@@ -418,94 +355,86 @@ function App() {
           ))}
         </div>
       </section>
-    </>
-  )
 
-  const AdminSection = () => (
-    <section id="admin" className="section admin">
-      <div className="section-head">
-        <h2>Admin (store use)</h2>
-        <p>Login to add, edit, or delete photos and descriptions. No coding required.</p>
-      </div>
-      {!isAdmin && (
-        <form className="card login" onSubmit={handleLogin}>
-          <label>
-            Admin passcode
-            <input
-              type="password"
-              value={form.adminPassword || ''}
-              onChange={(e) => setForm({ ...form, adminPassword: e.target.value })}
-              placeholder="Enter passcode"
-              required
-            />
-          </label>
-          {loginError && <p className="error">{loginError}</p>}
-          <button type="submit" className="btn primary">
-            Login
-          </button>
-        </form>
-      )}
+      <section id="admin" className="section admin">
+        <div className="section-head">
+          <h2>Admin (store use)</h2>
+          <p>Login to add, edit, or delete photos and descriptions. No coding required.</p>
+        </div>
+        {!isAdmin && (
+          <form className="card login" onSubmit={handleLogin}>
+            <label>
+              Admin passcode
+              <input
+                type="password"
+                value={form.adminPassword || ''}
+                onChange={(e) => setForm({ ...form, adminPassword: e.target.value })}
+                placeholder="Enter passcode"
+                required
+              />
+            </label>
+            {loginError && <p className="error">{loginError}</p>}
+            <button type="submit" className="btn primary">
+              Login
+            </button>
+          </form>
+        )}
 
-      {isAdmin && (
-        <div className="admin-grid">
-          <form className="card editor" onSubmit={handleSave}>
-            <div className="row">
-              <label>
-                Title
-                <input
-                  value={form.title}
-                  onChange={(e) => setForm({ ...form, title: e.target.value })}
-                  placeholder="Eg: Emerald bridal choker"
-                  required
-                />
-              </label>
-              <label>
-                Image URL
-                <input
-                  value={form.image}
-                  onChange={(e) => setForm({ ...form, image: e.target.value, imageName: '' })}
-                  placeholder="Paste photo link"
-                />
-              </label>
-            </div>
-            <div className="row">
-              <label>
-                Or upload photo
-                <input type="file" accept="image/*" onChange={handleFileUpload} />
-                {form.imageName && <p className="note">Uploaded: {form.imageName}</p>}
-              </label>
-              <label>
-                Category
-                <input
-                  list="category-list"
-                  value={form.category}
-                  onChange={(e) => setForm({ ...form, category: e.target.value })}
-                  placeholder="Necklaces, Bangles, ..."
-                  required
-                />
-                <datalist id="category-list">
-                  {sortedCategories.map(([category]) => (
-                    <option key={category} value={category} />
-                  ))}
-                </datalist>
-              </label>
-            </div>
-            <div className="row">
-              <label>
-                Subcategory
-                <input
-                  list="subcategory-list"
-                  value={form.subcategory}
-                  onChange={(e) => setForm({ ...form, subcategory: e.target.value })}
-                  placeholder="Occasion or style"
-                  required
-                />
-                <datalist id="subcategory-list">
-                  {(categories[form.category] || []).map((sub) => (
-                    <option key={sub} value={sub} />
-                  ))}
-                </datalist>
-              </label>
+        {isAdmin && (
+          <div className="admin-grid">
+            <form className="card editor" onSubmit={handleSave}>
+              <div className="row">
+                <label>
+                  Title
+                  <input
+                    value={form.title}
+                    onChange={(e) => setForm({ ...form, title: e.target.value })}
+                    placeholder="Eg: Emerald bridal choker"
+                    required
+                  />
+                </label>
+                <label>
+                  Image URL
+                  <input
+                    value={form.image}
+                    onChange={(e) => setForm({ ...form, image: e.target.value })}
+                    placeholder="Paste photo link"
+                    required
+                  />
+                </label>
+              </div>
+              <div className="row">
+                <label>
+                  Category
+                  <input
+                    list="category-list"
+                    value={form.category}
+                    onChange={(e) => setForm({ ...form, category: e.target.value })}
+                    placeholder="Necklaces, Bangles, ..."
+                    required
+                  />
+                  <datalist id="category-list">
+                    {sortedCategories.map(([category]) => (
+                      <option key={category} value={category} />
+                    ))}
+                  </datalist>
+                </label>
+                <label>
+                  Subcategory
+                  <input
+                    list="subcategory-list"
+                    value={form.subcategory}
+                    onChange={(e) => setForm({ ...form, subcategory: e.target.value })}
+                    placeholder="Occasion or style"
+                    required
+                  />
+                  <datalist id="subcategory-list">
+                    {(categories[form.category] || []).map((sub) => (
+                      <option key={sub} value={sub} />
+                    ))}
+                  </datalist>
+                </label>
+              </div>
               <label>
                 Description
                 <textarea
@@ -515,91 +444,64 @@ function App() {
                   placeholder="Short, inviting description"
                 />
               </label>
-            </div>
-            <p className="note">Tip: add an image URL or upload a photo. Uploaded files stay in this browser.</p>
-            <div className="editor-actions">
-              <button type="submit" className="btn primary">
-                {editingId ? 'Save changes' : 'Add new piece'}
-              </button>
-              {editingId && (
-                <button type="button" className="btn ghost" onClick={resetForm}>
-                  Cancel edit
+              <div className="editor-actions">
+                <button type="submit" className="btn primary">
+                  {editingId ? 'Save changes' : 'Add new piece'}
                 </button>
-              )}
-            </div>
-          </form>
+                {editingId && (
+                  <button type="button" className="btn ghost" onClick={resetForm}>
+                    Cancel edit
+                  </button>
+                )}
+              </div>
+            </form>
 
-          <div className="card list">
-            <div className="list-head">
-              <h3>Current pieces</h3>
-              <p>Tap edit to update or delete to remove.</p>
-            </div>
-            <div className="list-items">
-              {filteredProducts.map((item) => (
-                <div key={item.id} className="list-item">
-                  <div>
-                    <p className="pill muted">
-                      {item.category} · {item.subcategory}
-                    </p>
-                    <strong>{item.title}</strong>
-                    <p className="muted small">{item.description}</p>
+            <div className="card list">
+              <div className="list-head">
+                <h3>Current pieces</h3>
+                <p>Tap edit to update or delete to remove.</p>
+              </div>
+              <div className="list-items">
+                {filteredProducts.map((item) => (
+                  <div key={item.id} className="list-item">
+                    <div>
+                      <p className="pill muted">
+                        {item.category} · {item.subcategory}
+                      </p>
+                      <strong>{item.title}</strong>
+                      <p className="muted small">{item.description}</p>
+                    </div>
+                    <div className="list-actions">
+                      <button className="btn text" onClick={() => startEdit(item)}>
+                        Edit
+                      </button>
+                      <button className="btn text danger" onClick={() => deleteProduct(item.id)}>
+                        Delete
+                      </button>
+                    </div>
                   </div>
-                  <div className="list-actions">
-                    <button className="btn text" onClick={() => startEdit(item)}>
-                      Edit
-                    </button>
-                    <button className="btn text danger" onClick={() => deleteProduct(item.id)}>
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
+        )}
+      </section>
+
+      <footer className="footer">
+        <div>
+          <h3>Shree Raam Jewellery</h3>
+          <p>Personalised silver artistry, wedding jewels, and daily essentials.</p>
         </div>
-      )}
-    </section>
-  )
-
-  return (
-    <Router>
-      <div className="page">
-        <header className="nav">
-          <div className="logo-mark">SRJ</div>
-          <nav>
-            <Link to="/">Home</Link>
-            <a href="/#collections">Collections</a>
-            <a href="/#personalised">Personalised</a>
-            <a href="/#gallery">Gallery</a>
-            <Link to="/admin">Admin</Link>
-          </nav>
-          <a className="phone" href={`tel:${whatsappNumber}`}>
-            {whatsappNumber}
+        <div className="footer-actions">
+          <a className="btn primary" href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noreferrer">
+            WhatsApp {whatsappNumber}
           </a>
-        </header>
-
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/category/:categoryName" element={<CategoryPage products={filteredProducts} categories={categories} />} />
-          <Route path="/admin" element={<AdminSection />} />
-        </Routes>
-
-        <footer className="footer">
-          <div>
-            <h3>Shree Raam Jewellery</h3>
-            <p>Personalised silver artistry, wedding jewels, and daily essentials.</p>
-          </div>
-          <div className="footer-actions">
-            <a className="btn primary" href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noreferrer">
-              WhatsApp {whatsappNumber}
-            </a>
-            <a className="btn ghost" href="mailto:hello@shreeraamjewellery.com">
-              Email the studio
-            </a>
-          </div>
-        </footer>
-      </div>
-    </Router>
+          <a className="btn ghost" href="mailto:hello@shreeraamjewellery.com">
+            Email the studio
+          </a>
+        </div>
+      </footer>
+    </div>
   )
 }
 
